@@ -1,0 +1,49 @@
+{% extends 'generator/base.html' %}
+
+{% block title %}
+    {% if request.resolver_match.url_name == 'my_gallery' %}
+        My Gallery
+    {% else %}
+        ASCII Art Gallery
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    {% if request.resolver_match.url_name == 'my_gallery' %}
+        My ASCII Art Gallery
+    {% else %}
+        ASCII Art Gallery
+    {% endif %}
+</h1>
+
+{% if arts %}
+<div class="row">
+    {% for art in arts %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ art.original_image.url }}" class="card-img-top" alt="{{ art.title }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ art.title|default:"Untitled" }}</h5>
+                <p class="card-text">
+                    <small class="text-muted">Created: {{ art.created_at|date:"F j, Y" }}</small>
+                    {% if art.user %}
+                        <br><small class="text-muted">By: {{ art.user.username }}</small>
+                    {% endif %}
+                </p>
+                <a href="{% url 'view_result' art.pk %}" class="btn btn-primary">View ASCII Art</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    {% if request.resolver_match.url_name == 'my_gallery' %}
+        You haven't created any ASCII art yet. <a href="{% url 'generate_ascii' %}">Create your first one!</a>
+    {% else %}
+        No ASCII arts have been created yet. Be the first to <a href="{% url 'generate_ascii' %}">create some ASCII art!</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

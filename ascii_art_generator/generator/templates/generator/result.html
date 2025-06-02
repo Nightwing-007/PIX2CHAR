@@ -1,0 +1,80 @@
+{% extends 'generator/base.html' %}
+
+{% block title %}ASCII Art Result{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h2>{{ ascii_art.title|default:"ASCII Art Result" }}</h2>
+                <p class="mb-0">Created: {{ ascii_art.created_at|date:"F j, Y" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3>Original Image</h3>
+            </div>
+            <div class="card-body text-center">
+                <img src="data:image/jpeg;base64,{{ original_image }}" alt="Original Image" class="img-fluid">
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3>ASCII Art Result</h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="ascii-art">{{ ascii_art.ascii_result }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>Options</h3>
+            </div>
+            <div class="card-body">
+                <div class="d-flex gap-2">
+                    <a href="{% url 'generate_ascii' %}" class="btn btn-primary">Create Another</a>
+                    <button class="btn btn-outline-secondary" id="copyBtn">Copy ASCII Art</button>
+                    {% if user.is_authenticated %}
+                        {% if ascii_art.user == user %}
+                            <form method="post" action="{% url 'delete_art' ascii_art.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this?');">Delete</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('copyBtn').addEventListener('click', function() {
+        const asciiText = document.querySelector('.ascii-art').innerText;
+        navigator.clipboard.writeText(asciiText)
+            .then(() => {
+                this.textContent = 'Copied!';
+                setTimeout(() => {
+                    this.textContent = 'Copy ASCII Art';
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Error copying text: ', err);
+            });
+    });
+</script>
+{% endblock %}

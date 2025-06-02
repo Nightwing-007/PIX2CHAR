@@ -1,0 +1,56 @@
+{% extends 'generator/base.html' %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to ASCII Art Generator</h1>
+    <p class="lead">Transform your images into amazing ASCII art with just a few clicks.</p>
+    <hr class="my-4">
+    <p>Upload an image, set your preferences, and watch the magic happen!</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'generate_ascii' %}" role="button">Get Started</a>
+</div>
+
+{% if recent_arts %}
+<h2 class="mt-5 mb-4">Recent Creations</h2>
+<div class="row">
+    {% for art in recent_arts %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ art.original_image.url }}" class="card-img-top" alt="{{ art.title }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ art.title }}</h5>
+                <p class="card-text">Created: {{ art.created_at|date:"F j, Y" }}</p>
+                <a href="{% url 'view_result' art.pk %}" class="btn btn-primary">View ASCII Art</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Easy to Use</h5>
+                <p class="card-text">Our user-friendly interface makes creating ASCII art simple and fun.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Customizable</h5>
+                <p class="card-text">Adjust settings like width to get the perfect result.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Save Your Work</h5>
+                <p class="card-text">Create an account to save and manage your ASCII art creations.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
